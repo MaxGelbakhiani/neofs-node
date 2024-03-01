@@ -216,6 +216,16 @@ jobs:
           source venv.local-pytest/bin/activate && pytest --alluredir="$ALLURE_RESULTS_DIR" pytest_tests/testsuites/session_token/test_static_session_token_container.py
         working-directory: neofs-testcases
 
+
+      - name: Add github run url to Allure report
+        run: 
+          echo "TEST_RUN_URL=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $ALLURE_RESULTS_DIR/environment.properties
+      
+      - name: tmate session
+        if: always()
+        uses: mxschmitt/action-tmate@v3
+
+
       - name: Publish to NeoFS
         id: put_report
         if: always() && steps.prepare_test_env.outcome == 'success'
